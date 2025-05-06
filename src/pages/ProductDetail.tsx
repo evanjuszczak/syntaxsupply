@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import ProductCarousel from '@/components/ProductCarousel';
 import { getProductBySlug } from '@/data/products';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, Ruler, FileText } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Ruler, FileText, Share2, Check } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const product = getProductBySlug(slug || '');
+  const { toast } = useToast();
+  const [isSharing, setIsSharing] = useState(false);
 
   if (!product) {
     return (
@@ -26,6 +29,42 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     window.location.href = product.stripeLink;
+  };
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    const productUrl = `${window.location.origin}/product/${slug}`;
+    
+    try {
+      // Try to use the Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: product.name,
+          text: product.description,
+          url: productUrl,
+        });
+        toast({
+          title: "Shared successfully!",
+          description: "The product link has been shared.",
+        });
+      } else {
+        // Fallback to clipboard copy
+        await navigator.clipboard.writeText(productUrl);
+        toast({
+          title: "Link copied!",
+          description: "The product link has been copied to your clipboard.",
+        });
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      toast({
+        title: "Couldn't share",
+        description: "There was an error sharing this product.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   return (
@@ -108,13 +147,30 @@ const ProductDetail = () => {
               </ul>
             </div>
             
-            <Button 
-              onClick={handleBuyNow}
-              size="lg" 
-              className="w-full py-6 text-lg bg-syntax-blue hover:bg-syntax-blue/90 transition-all duration-300 hover:shadow-lg transform hover:scale-[1.01]"
-            >
-              <ShoppingCart className="mr-2 h-5 w-5" /> Buy Now
-            </Button>
+            <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+              <Button 
+                onClick={handleBuyNow}
+                size="lg" 
+                className="w-full py-6 text-lg bg-syntax-blue hover:bg-syntax-blue/90 transition-all duration-300 hover:shadow-lg transform hover:scale-[1.01]"
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" /> Buy Now
+              </Button>
+              
+              <Button 
+                onClick={handleShare}
+                size="lg" 
+                variant="outline"
+                disabled={isSharing}
+                className="w-full sm:w-auto py-6 text-lg transition-all duration-300 hover:shadow-md"
+              >
+                {isSharing ? (
+                  <Check className="mr-2 h-5 w-5" />
+                ) : (
+                  <Share2 className="mr-2 h-5 w-5" />
+                )}
+                Share
+              </Button>
+            </div>
           </div>
         </div>
       </div>
