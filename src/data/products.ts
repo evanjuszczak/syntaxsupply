@@ -19,8 +19,8 @@ export const products: Product[] = [
     price: '$38.99',
     stripeLink: 'https://buy.stripe.com/4gw4irdDMaY80M0cMN',
     images: [
-      '/IMG_0282.jpg',
-      '/IMG_0282.jpg',
+      '/IMG_0279.jpg',
+      '/IMG_2E242E5B19BF-1.jpeg',
     ]
   },
   {
@@ -32,7 +32,7 @@ export const products: Product[] = [
     stripeLink: 'https://buy.stripe.com/9AQ02b0R0eak2U8dQS',
     images: [
       '/IMG_0281.jpg',
-      '/IMG_0281.jpg',
+      '/IMG_3BD7FC637BDB-1.jpeg',
     ]
   },
   {
@@ -43,8 +43,8 @@ export const products: Product[] = [
     price: '$38.99',
     stripeLink: 'https://buy.stripe.com/7sI6qz1V4feo7aobIL',
     images: [
-      '/IMG_0284.jpg',
-      '/IMG_0284.jpg',
+      '/excel1.jpg',
+      '/excel2.jpg',
     ]
   },
   {
@@ -55,8 +55,8 @@ export const products: Product[] = [
     price: '$38.99',
     stripeLink: 'https://buy.stripe.com/00gg1957ggisgKY4gk',
     images: [
-      '/IMG_0279.jpg',
-      '/IMG_0279.jpg',
+      '/IMG_0282.jpg',
+      '/IMG_64985474CFA0-1.jpeg',
     ]
   },
   {

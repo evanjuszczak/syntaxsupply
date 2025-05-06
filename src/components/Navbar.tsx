@@ -23,13 +23,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm py-5">
       <div className="container flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2">
           <img 
             src="/lovable-uploads/7c15db8d-f882-4e60-969e-45d4f8311a76.png" 
             alt="Syntax Supply Logo" 
-            className="h-12" 
+            className="h-16" 
           />
         </Link>
         
