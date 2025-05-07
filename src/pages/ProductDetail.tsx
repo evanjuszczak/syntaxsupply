@@ -6,6 +6,7 @@ import { getProductBySlug } from '@/data/products';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ShoppingCart, Ruler, FileText, Share2, Check } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { trackEvent } from '@/lib/analytics';
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -28,6 +29,15 @@ const ProductDetail = () => {
   }
 
   const handleBuyNow = () => {
+    // Track the buy button click
+    trackEvent('buy_click', {
+      product_name: product.name,
+      product_id: product.id || slug,
+      product_type: product.isGuide ? 'guide' : 'mousepad',
+      product_price: product.price,
+      outbound_url: product.stripeLink
+    });
+    
     window.location.href = product.stripeLink;
   };
 
@@ -47,12 +57,26 @@ const ProductDetail = () => {
           title: "Shared successfully!",
           description: "The product link has been shared.",
         });
+        
+        // Track the successful share
+        trackEvent('share_success', {
+          product_name: product.name,
+          product_id: product.id || slug,
+          share_method: 'web_share_api'
+        });
       } else {
         // Fallback to clipboard copy
         await navigator.clipboard.writeText(productUrl);
         toast({
           title: "Link copied!",
           description: "The product link has been copied to your clipboard.",
+        });
+        
+        // Track the successful copy
+        trackEvent('share_success', {
+          product_name: product.name,
+          product_id: product.id || slug,
+          share_method: 'clipboard'
         });
       }
     } catch (error) {
@@ -62,10 +86,29 @@ const ProductDetail = () => {
         description: "There was an error sharing this product.",
         variant: "destructive",
       });
+      
+      // Track the failed share
+      trackEvent('share_error', {
+        product_name: product.name,
+        product_id: product.id || slug,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     } finally {
       setIsSharing(false);
     }
   };
+
+  // Track page view for product detail
+  React.useEffect(() => {
+    if (product) {
+      trackEvent('product_view', {
+        product_name: product.name,
+        product_id: product.id || slug,
+        product_type: product.isGuide ? 'guide' : 'mousepad',
+        product_price: product.price
+      });
+    }
+  }, [product, slug]);
 
   return (
     <Layout>

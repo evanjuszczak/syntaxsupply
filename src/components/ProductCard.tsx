@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
+import { trackEvent } from '@/lib/analytics';
 
 interface ProductCardProps {
   id: string;
@@ -12,8 +13,21 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, name, price, image, slug, isGuide }: ProductCardProps) => {
+  const handleClick = () => {
+    trackEvent('product_click', {
+      product_name: name,
+      product_id: id || slug,
+      product_type: isGuide ? 'guide' : 'mousepad',
+      product_price: price
+    });
+  };
+
   return (
-    <Link to={`/product/${slug}`} className="block transform transition-all duration-300 hover:translate-y-[-5px]">
+    <Link 
+      to={`/product/${slug}`} 
+      className="block transform transition-all duration-300 hover:translate-y-[-5px]"
+      onClick={handleClick}
+    >
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg border-opacity-50">
         <div className={`${isGuide ? 'aspect-square' : 'aspect-[4/3]'} overflow-hidden bg-slate-50 flex items-center justify-center`}>
           <img 
